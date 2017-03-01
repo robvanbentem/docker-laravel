@@ -4,6 +4,7 @@
 # ------------------------------------------------------------------------------
 
 apt-get update && apt-get upgrade -y -o Dpkg::Options::="--force-confold"
+apt-get install vim curl
 
 # ------------------------------------------------------------------------------
 # NGINX web server
@@ -50,25 +51,12 @@ php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 rm ./composer-setup.php
 
 # ------------------------------------------------------------------------------
-# MariaDB server
+# Redis
 # ------------------------------------------------------------------------------
 
-# install MariaDB client and server
-apt-get -y install mariadb-client
-apt-get -y install mariadb-server pwgen
-cp /provision/service/mariadb.conf /etc/supervisord/mariadb.conf
-
-# MariaDB seems to have problems starting if these permissions are not set:
-mkdir /var/run/mysqld
-chmod 777 /var/run/mysqld
-
-# ------------------------------------------------------------------------------
-# Beanstalkd task queue
-# ------------------------------------------------------------------------------
-
-apt-get -y install beanstalkd
-cp /provision/service/beanstalkd.conf /etc/supervisord/beanstalkd.conf
-cp /provision/service/queue.conf /etc/supervisord/queue.conf
+apt-get -y install redis-server
+cp /provision/service/redis.conf /etc/supervisord/redis.conf
+echo "daemonize no" >> /etc/redis/redis.conf
 
 # ------------------------------------------------------------------------------
 # Node and npm
@@ -101,6 +89,7 @@ curl -sL https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x
 tar xf phantomjs.tar.bz2
 mv phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
 rm -rf ./phantomjs*
+
 
 # ------------------------------------------------------------------------------
 # Clean up
